@@ -15,6 +15,11 @@ io.on('connection', function(socket){
       });
 
     socket.on('chat message', function(msg){
+        if (msg == null || msg.trim().length == 0){
+            console.log('empty message dropped');
+            return;
+        }
+        
         console.log(`chat message received:${msg}`);
         io.emit('chat message', msg);
     });
