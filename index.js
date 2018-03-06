@@ -3,12 +3,21 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 io.on('connection', function(socket){
-    console.log('a user connected');
+    console.log(`a user connected:{id:${socket.client.id}}`);
+    
+    socket.on('disconnect', function(obj){
+        console.log(`a user disconnected:${obj}`);
+    });
+
     socket.emit('news', { hello: 'world' });
     socket.on('my other event', function (data) {
         console.log(data);
       });
-    
+
+    socket.on('chat message', function(msg){
+        console.log(`chat message received:${msg}`);
+        io.emit('chat message', msg);
+    });
 });
   
 
