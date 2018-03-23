@@ -52,15 +52,25 @@
       });
 
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        socket.emit('chat message', {senderid:socket.id, msg:$('#m').val()});
         $('#m').val('');
         return false;
       });
 
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+        $('#messages').append($('<li>').text(msg.msg));
+        AddMember(msg.senderid);
       });
     });
+
+    function AddMember(member){
+      if($(`#participants li:contains('${member}')`).length == 0){
+          console.log(`new member:${member}`);
+          $("#participants li").append($('<li>').text(member));
+        }else{
+          console.log(`existing member:${member}`);
+        }
+    }
   </script>
   <body>
     <div class="chatgrid-container">
