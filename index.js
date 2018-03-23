@@ -1,6 +1,6 @@
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http).of('/KaiDan');
 
 io.on('connection', function(socket){
     console.log(`a user connected:{id:${socket.client.id}}`);
@@ -30,7 +30,7 @@ io.on('connection', function(socket){
             return;
         }
 
-        console.log(`chat message received:${msg}`);
+        console.log(`chat message received:${JSON.stringify(msg)}`);
         io.emit('chat message', msg);
     });
 });

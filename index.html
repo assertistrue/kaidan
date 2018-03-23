@@ -45,7 +45,7 @@
     // });
     
     $(function(){
-      var socket = io();
+      var socket = io('/KaiDan');
       socket.on('news', function (data) {
         console.log(data);
         socket.emit('my other event', { my: 'data' });
@@ -79,7 +79,7 @@
       </div>
       <div>
         <ul id="participants">
-          <li>this is me</li>
+          <li>Participants</li>
         </ul>
       </div>
     </div>
