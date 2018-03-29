@@ -6,11 +6,11 @@ io.on('connection', function(socket){
     console.log(`a user connected:{id:${socket.client.id}}`);
     
     socket.on('disconnect', function(obj){
-        console.log(`a user disconnected:${obj}`);
+        console.log(`a user (${this.client.id}) disconnected:${obj}`);
     });
 
     socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
+    socket.on('Ctrl', function (data) {
         console.log(data);
       });
 

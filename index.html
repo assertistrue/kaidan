@@ -21,14 +21,21 @@
         padding: 2px;
         grid-area: auto;
       }
-      .chatgrid-messagebox {
-        background-color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        padding:2px 3px;
-        font-size: 20px;
-        height: 100%;
-        overflow-y: scroll;
-        overflow-x: auto;
+
+      #MessageDiv {
+        background-color: lightgreen; 
+        color: darkblue;
+      }
+
+      #MessageDiv .message-self {
+        text-align: left;
+        font-weight: bold;
+        background-color: lightblue;
+      }
+
+      #MessageDiv .message-others {
+        text-align: right;
+        font-weight: normal;
       }
 
     </style>
@@ -36,30 +43,26 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
-    // var socket = io();
-
-    // // var socket = io('http://localhost');
-    // socket.on('news', function (data) {
-    //   console.log(data);
-    //   socket.emit('my other event', { my: 'data' });
-    // });
-    
     $(function(){
       var socket = io('/KaiDan');
       socket.on('news', function (data) {
         console.log(data);
-        socket.emit('my other event', { my: 'data' });
+        socket.emit('Ctrl', { my: 'data' });
       });
 
       $('form').submit(function(){
-        socket.emit('chat message', {senderid:socket.id, msg:$('#m').val()});
+        var newMessage = $('#m').val();
+        $('#MessageDiv').append($('<div>').addClass('message-self').text(newMessage));
+        socket.emit('chat message', {senderid:socket.id, msg:newMessage});
         $('#m').val('');
         return false;
       });
 
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg.msg));
-        AddMember(msg.senderid);
+        if (msg.senderid != this.id){
+            $('#MessageDiv').append($('<div>').addClass('message-others').text(msg.msg));
+            AddMember(msg.senderid);
+        }
       });
     });
 
@@ -74,8 +77,11 @@
   </script>
   <body>
     <div class="chatgrid-container">
-      <div class="chatgrid-messagebox">
-          <ul id="messages"></ul>
+      <div id="MessageDiv">
+        <div style="text-align: left; font-weight: bold">abc</div>
+        <div style="text-align: right">def</div>
+        <div style="text-align: right">def</div>
+        <div style="text-align: right">def</div>
       </div>
       <div>
         <ul id="participants">
@@ -86,5 +92,6 @@
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
+
   </body>
 </html>
