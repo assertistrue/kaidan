@@ -1,4 +1,6 @@
-var app = require('express')();
+const path = require('path')
+const express = require('express')
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http).of('/KaiDan');
 
@@ -40,9 +42,11 @@ http.listen(3000, function(){
     console.log('listening on *:3000');
 });
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-});
+app.use('/', express.static(path.join(__dirname, 'webroot')))
+
+// app.get('/', function(req, res){
+//     res.sendFile(__dirname + '/index.html');
+// });
 
 
 //   const port = 3000
