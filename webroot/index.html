@@ -42,9 +42,10 @@
   <script>
     $(function(){
       var socket = io('/KaiDan');
-      socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('Ctrl', { my: 'data' });
+
+      socket.on('Ctrl', function (data) {
+        console.log(`Ctrl:${JSON.stringify(data)}`);
+        socket.emit('Ctrl', { senderid:socket.id, my: 'ack back ctrl' });
       });
 
       $('form').submit(function(){

@@ -9,12 +9,13 @@ io.on('connection', function(socket){
     
     socket.on('disconnect', function(obj){
         console.log(`a user (${this.client.id}) disconnected:${obj}`);
+        // socket.emit('Ctrl', { act: 'disconnect', userid: this.client.id, serverid: this.id });
     });
 
-    socket.emit('news', { hello: 'world' });
     socket.on('Ctrl', function (data) {
-        console.log(data);
+        console.log(`Ctrl:${JSON.stringify(data)} from ${this.id}`);
       });
+    socket.emit('Ctrl', { senderid:'ChatService', hello: 'world2' });
 
     socket.on('chat message', function(msg){
         if (msg == null){
