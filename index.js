@@ -15,7 +15,7 @@ io.on('connection', function(socket){
     socket.on('Ctrl', function (data) {
         console.log(`Ctrl:${JSON.stringify(data)} from ${this.id}`);
       });
-    socket.emit('Ctrl', { senderid:'ChatService', hello: 'world2' });
+    socket.broadcast.emit('UserConnect', { senderid:'ChatService', hello: 'world2', userid:socket.client.id });
 
     socket.on('chat message', function(msg){
         if (msg == null){

@@ -48,6 +48,11 @@
         socket.emit('Ctrl', { senderid:socket.id, my: 'ack back ctrl' });
       });
 
+      socket.on('UserConnect', function(data){
+        console.log(`UserConnect:${JSON.stringify(data)}`);
+        AddMember(data.userid);
+      })
+
       $('form').submit(function(){
         var newMessage = $('#m').val();
         $('#MessageDiv').append($('<div>').addClass('message-self').text(newMessage));
@@ -59,7 +64,7 @@
       socket.on('chat message', function(msg){
         if (msg.senderid != this.id){
             $('#MessageDiv').append($('<div>').addClass('message-others').text(msg.msg));
-            AddMember(msg.senderid);
+            // AddMember(msg.senderid);
         }
       });
     });
