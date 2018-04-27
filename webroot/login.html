@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat Login</title>
+  </head>
+  <body>
+      <div id='div-Authentication-Detail' style="margin: 2pt">
+          User sign in status: <label id='Authentication-Status'>Unknown</label><br/>
+          User name: <label id='Authentication-UserId'>SuperButterfly</label><br/>
+          User Details: <label id="Authentication-UserDetail">{Empty}</label><br/>
+          Access Token: <textarea id='Authentication-Token' readonly="readonly">{Empty}</textarea>
+      </div>
+      <div id='div-Authentication-Commands' style="border: 2pt; border-color: darkgreen">
+        <button onclick="loginFn()">Log me in</button>
+        <button onclick="logoutFn()">Log me out</button>
+        <a href="index.html">Chat</a>
+      </div>
+  </body>
+        
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-auth.js"></script>
+    <script src="./scripts/config.js"></script>
+    <script>
+    // Initialize Firebase
+    
+    var defaultApp = firebase.initializeApp(firebaseconfig);
+    console.log(`defaultApp.name:${defaultApp.name}`);
+
+    firebase.auth().getRedirectResult().then(function(result) {
+            var token = "{Empty}";
+            var user = {"displayName":"WhoAreYou"};
+
+            if (result.credential) {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                token = result.credential.accessToken;
+            }
+
+            // The signed-in user info.
+            // var user = result.user;
+            // document.getElementById("Authentication-UserDetail").textContent = JSON.stringify(user);
+            // document.getElementById("Authentication-UserId").textContent = user.displayName;
+        }).catch(function(error) {
+            console.log(`is in error: ${error}`);
+            console.log(`is in error: ${JSON.stringify(error)}`);
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+    });
+
+    firebase.auth().onAuthStateChanged(function(userParam){
+        if (userParam){
+            //user signed in
+            document.getElementById("Authentication-Status").textContent = "logged in";
+            document.getElementById("Authentication-UserDetail").textContent = JSON.stringify(userParam);
+            document.getElementById("Authentication-UserId").textContent = userParam.displayName;
+            document.getElementById("Authentication-Token").textContent = token;
+        }else{
+            //user did not sign in
+            document.getElementById("Authentication-Status").textContent = "Not logged in";
+            document.getElementById("Authentication-UserDetail").textContent = "{Empty}";
+            document.getElementById("Authentication-UserId").textContent = "{Empty}";           
+            document.getElementById("Authentication-Token").textContent = "{Empty}";
+        }
+
+    });
+
+    </script>
+
+    <script>
+
+    function loginFn(){
+        var provider = new firebase.auth.GoogleAuthProvider();
+        //provider.addScope('https://www.googleapis.com/auth/plus.login');
+        firebase.auth().useDeviceLanguage();
+        firebase.auth().signInWithRedirect(provider);
+    }        
+
+    function logoutFn(){
+        firebase.auth().signOut();
+    }
+
+    </script>
+</html>
