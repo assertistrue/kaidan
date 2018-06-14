@@ -2,7 +2,7 @@ const path = require('path')
 const express = require('express')
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http).of('/KaiDan');
+var io = require('socket.io')(http, {wsEngine : "ws"}).of('/KaiDan');
 
 io.on('connection', function(socket){
     console.log(`a user connected:{id:${socket.client.id}}`);
