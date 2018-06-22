@@ -5,15 +5,15 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http, {wsEngine : "ws"}).of('/KaiDan');
 
 io.on('connection', function(socket){
-    console.log(`a user connected:{id:${socket.client.id}}`);
-    
+    console.log(`a user connected:{id:${socket.client.id}}, avatarName:${socket.handshake.query.avatarName}`);
+    socket.join('Ctl');
     socket.on('disconnect', function(obj){
         console.log(`a user (${this.client.id}) disconnected:${obj}`);
-        // socket.emit('Ctrl', { act: 'disconnect', userid: this.client.id, serverid: this.id });
+        socket.leave('Ctl');
     });
 
-    socket.on('Ctrl', function (data) {
-        console.log(`Ctrl:${JSON.stringify(data)} from ${this.id}`);
+    socket.on('Ctl', function (data) {
+        console.log(`Ctl:${JSON.stringify(data)} from ${this.id}`);
       });
     socket.broadcast.emit('UserConnect', { senderid:'ChatService', hello: 'world2', userid:socket.client.id });
 

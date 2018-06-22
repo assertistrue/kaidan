@@ -46,12 +46,14 @@
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
     $(function(){
-      var socket = io('/KaiDan');
+      // const socket = io('http://localhost:3000/KaiDan');
+      const socket = io(`${window.location.origin}/KaiDan`, {query:'avatarName=superman'});
 
-      socket.on('Ctrl', function (data) {
-        console.log(`Ctrl:${JSON.stringify(data)}`);
-        socket.emit('Ctrl', { senderid:socket.id, my: 'ack back ctrl' });
-      });
+
+      // socket.on('Ctl', function (data) {
+      //   console.log(`Ctl:${JSON.stringify(data)}`);
+      //   socket.emit('Ctl', { senderid:socket.id, my: 'ack back ctl' });
+      // });
 
       socket.on('UserConnect', function(data){
         console.log(`UserConnect:${JSON.stringify(data)}`);
@@ -65,6 +67,8 @@
         $('#m').val('');
         return false;
       });
+
+      
 
       socket.on('chat message', function(msg){
         if (msg.senderid != this.id){
