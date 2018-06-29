@@ -1,11 +1,17 @@
 const path = require('path')
 const express = require('express')
+const ctrller = require('./scripts/chat/controller.js')
+
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http, {wsEngine : "ws"}).of('/KaiDan');
 
+
 io.on('connection', function(socket){
     console.log(`a user connected:{id:${socket.client.id}}, avatarName:${socket.handshake.query.avatarName}`);
+    var c = new ctrller();
+    socket.use(c.middlewareFn);
+
     socket.join('Ctl');
     socket.on('disconnect', function(obj){
         console.log(`a user (${this.client.id}) disconnected:${obj}`);
