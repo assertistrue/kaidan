@@ -1,19 +1,35 @@
 const path = require('path')
 const express = require('express')
-const ctrller = require('./scripts/chat/controller.js')
+const ctrller = require('./scripts/chat/Controller.js')
+const cmodel = require('./scripts/chat/model/ChatModel.js')
 
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http, {wsEngine : "ws"}).of('/KaiDan');
 
 
-io.on('connection', function(socket){
-    console.log(`a user connected:{id:${socket.client.id}}, avatarName:${socket.handshake.query.avatarName}`);
+console.log(`EventsType:${JSON.stringify(cmodel.EventsType)}`);
+// cmodel.EventsType.UsersChange = null;
+// console.log(`EventsType:${JSON.stringify(cmodel.EventsType)}`);
+// cmodel.EventsType = null;
+// console.log(`EventsType:${JSON.stringify(cmodel.EventsType)}`);
+// let a = cmodel.EventsType;
+// a.UsersChange.UserExited = null;
+// console.log(`EventsType:${JSON.stringify(a)}`);
+// _EventsType = null;
+// console.log(`EventsType:${JSON.stringify(cmodel.EventsType)}`);
+
+
+console.log(`SocketEventsType:${JSON.stringify(cmodel.SocketEventsType)}`);
+
+io.on(cmodel.SocketEventsType.connection, function(socket){
+    console.log(`a user connected:{id:${socket.client.id}, avatarName:${socket.handshake.query.avatarName}}`);
+    
     var c = new ctrller();
     socket.use(c.middlewareFn);
 
     socket.join('Ctl');
-    socket.on('disconnect', function(obj){
+    socket.on(cmodel.SocketEventsType.disconnect, function(obj){
         console.log(`a user (${this.client.id}) disconnected:${obj}`);
         socket.leave('Ctl');
     });
@@ -23,24 +39,24 @@ io.on('connection', function(socket){
       });
     socket.broadcast.emit('UserConnect', { senderid:'ChatService', hello: 'world2', userid:socket.client.id });
 
-    socket.on('chat message', function(msg){
+    socket.on(cmodel.EventsType.ChatMessage, function(msg){
         if (msg == null){
-            console.log('message dropped:empty message object');
+            console.log(`${cmodel.EventsType.ChatMessage} dropped:empty message object`);
             return;
         }
 
         if (!msg.senderid){
-            console.log('message dropped:empty senderid');
+            console.log(`${cmodel.EventsType.ChatMessage} dropped:empty senderid`);
             return;
         }
 
         if (!msg.msg){
-            console.log("message dropped:empty message content");
+            console.log(`${cmodel.EventsType.ChatMessage} dropped:empty message content`);
             return;
         }
 
-        console.log(`chat message received:${JSON.stringify(msg)}`);
-        io.emit('chat message', msg);
+        console.log(`${cmodel.EventsType.ChatMessage} received:${JSON.stringify(msg)}`);
+        io.emit(cmodel.EventsType.ChatMessage, msg);
     });
 });
   
@@ -51,24 +67,3 @@ http.listen(3000, function(){
 
 app.use('/', express.static(path.join(__dirname, 'webroot')))
 
-// app.get('/', function(req, res){
-//     res.sendFile(__dirname + '/index.html');
-// });
-
-
-//   const port = 3000
-  
-//   const requestHandler = (request, response) => {
-//     console.log(request.url)
-//     response.end('Hello Node.js Server!')
-//   }
-  
-//   const server = http.createServer(requestHandler)
-  
-//   server.listen(port, (err) => {
-//     if (err) {
-//       return console.log('something bad happened', err)
-//     }
-  
-//     console.log(`server is listening on ${port}`)
-//   })

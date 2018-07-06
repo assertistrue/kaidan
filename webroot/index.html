@@ -63,14 +63,14 @@
       $('form').submit(function(){
         var newMessage = $('#m').val();
         $('#MessageDiv').append($('<div>').addClass('message-self').text(newMessage));
-        socket.emit('chat message', {senderid:socket.id, msg:newMessage});
+        socket.emit('ChatMessage', {senderid:socket.id, msg:newMessage});
         $('#m').val('');
         return false;
       });
 
       
 
-      socket.on('chat message', function(msg){
+      socket.on('ChatMessage', function(msg){
         if (msg.senderid != this.id){
             $('#MessageDiv').append($('<div>').addClass('message-others').text(msg.msg));
             // AddMember(msg.senderid);
